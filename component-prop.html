@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vue 3 Basic</title>
+  </head>
+  <style>
+    [v-cloak]{
+      display: none;
+    }
+    input{
+      margin: 10px auto;
+      display: block;
+    }
+  </style>
+  <body>
+    <div id="app" v-cloak>
+      <login-form />
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      let app = Vue.createApp({})
+      app.component('login-form', {
+        template: `
+          <form @submit.prevent="handleSubmit">
+            <h1>{{ title }}</h1>
+            <costom-input label="Name" v-model="name"/>
+            <costom-input :label="emailLabel" v-model="email"/>
+            <costom-input v-bind:label="passwordLabel" v-model="password"/>
+            <button>Log in</button>
+          </form>
+        `,
+        components: ["costom-input"],
+        data(){
+          return {
+            title: "Login form",
+            name: "",
+            email: "",
+            password: "",
+            emailLabel: "Email",
+            passwordLabel: "Password"
+          }
+        },
+        methods:{
+          handleSubmit(){
+            console.log(this.name, this.email, this.password)
+            this.name = ""
+            this.email = ""
+            this.password = ""
+          }
+        }
+      })
+      app.component('costom-input', {
+        template: `
+          <label>
+            {{ label }}
+            <input type="text" v-model="inputValue">
+          </label>
+        `,
+        props: ['label', 'modelValue'],
+        computed: {
+          inputValue:{
+            get(){
+              return this.modelValue
+            },
+            set(value){
+              this.$emit('update:modelValue', value)
+            }
+          }
+        }
+      })
+      app.mount('#app')
+    </script>
+  </body>
+</html>
